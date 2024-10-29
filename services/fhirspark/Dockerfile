@@ -1,5 +1,5 @@
 FROM docker.io/maven:3-eclipse-temurin-21 as build
-RUN git clone https://github.com/nr23730/fhirspark.git /fhirspark
+RUN git clone --branch presentation https://github.com/marcoschndlr/fhirspark /fhirspark
 WORKDIR /fhirspark
 RUN mvn -DskipTests clean package
 
