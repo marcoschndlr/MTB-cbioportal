@@ -8,8 +8,6 @@ services:
     environment:
       HTTP_PROXY: "http://${HTTPS_PROXY_HOST}:${HTTPS_PROXY_PORT}"
       NO_PROXY: "cbioportal"
-    ports:
-     - 8080:8080
     volumes:
      - ./study:/study/:z
      - ./config/application.properties:/cbioportal/application.properties:Z
@@ -117,6 +115,9 @@ services:
       FHIRSPARK_FHIRBASE: http://hapiserver:8080/fhir
       FHIRSPARK_PORTALURL: http://cbioportal:8080/
       FHIRSPARK_LOGINREQUIRED: ${LOGINREQUIRED:-false}
+      FILESERVER_URL: http://minio:9000
+      FILESERVER_ACCESS_KEY:
+      FILESERVER_SECRET_KEY:
     volumes:
       - ./data/drugs.json:/drugs.json:Z
       - ./data/hgnc.csv:/hgnc.csv:Z
@@ -126,8 +127,6 @@ services:
     restart: unless-stopped
     image: docker.io/hapiproject/hapi:v6.10.1-tomcat
     container_name: cbioportal_fhirspark_hapiserver
-    ports:
-      - 8081:8080
     depends_on:
       - hapi-postgres
     environment:
@@ -149,8 +148,6 @@ services:
     container_name: cbioportal_fhirspark_database
     volumes:
       - fhir_data:/var/lib/postgresql/data
-    ports:
-      - 5432:5432
     environment:
       POSTGRES_USER: hapiserver
       POSTGRES_PASSWORD: ${POSTGRES_USER_PASSWORD:-P@ssword2}
@@ -243,6 +240,8 @@ services:
       MINIO_ROOT_PASSWORD: cbioportal
     volumes:
       - 'minio_data:/data'
+    networks:
+      - cbioportal_net
     command: server /data --console-address ":9001"
 
 

@@ -16,9 +16,9 @@ FROM docker.io/maven:3-eclipse-temurin-21 as build
 ARG VERSION=6.0.4
 
 #RUN git clone --single-branch --branch release$VERSION https://github.com/buschlab/cbioportal-frontend.git /frontend
-RUN git clone --single-branch --branch presentation-without-fixes  https://github.com/marcoschndlr/cbioportal-frontend.git /frontend
-WORKDIR /frontend
-RUN mvn clean install
+#RUN git clone --single-branch --branch presentation-without-fixes  https://github.com/marcoschndlr/cbioportal-frontend.git /frontend
+#WORKDIR /frontend
+#RUN mvn clean install
 
 RUN git clone --single-branch --branch v$VERSION https://github.com/cbioportal/cbioportal.git /cbioportal
 WORKDIR /cbioportal
@@ -30,7 +30,7 @@ RUN git clone --single-branch --branch v1.0.7 https://github.com/cbioportal/cbio
 RUN sed -i 's/|| loh ||/||/' core/src/main/java/org/mskcc/cbio/portal/util/ExtendedMutationUtil.java
 RUN sed -i 's/safeStringTest( mutation.getMutationStatus(), "LOH" )/false/' core/src/main/java/org/mskcc/cbio/portal/scripts/MutationFilter.java
 
-RUN mvn -DskipTests -Dfrontend.version=0.3.0 -Dfrontend.groupId=com.github.cbioportal clean install package
+RUN mvn -DskipTests -Dfrontend.version=86bdb3e98fe649c9df4d8be1c3a213a2f5995a59 -Dfrontend.groupId=com.github.marcoschndlr clean install package
 RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*-exec.jar)
 
 WORKDIR /cbioportal/core
